@@ -1,0 +1,4 @@
+__pycache__/
+db/__pycache__/
+marketplace-venv/
+marketplace-platform.db
