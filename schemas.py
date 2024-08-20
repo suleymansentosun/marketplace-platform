@@ -58,3 +58,18 @@ class TransactionDisplay(BaseModel):
     advertisement_id: int
     class Config:
         orm_mode = True
+        
+
+class UserBase(BaseModel):
+    #id: int
+    username: str
+    email: str
+    password: str
+
+class UserDisplay(BaseModel):
+    id: int
+    username: str
+    email: str 
+    class Config():
+        from_attributes = True
+        
