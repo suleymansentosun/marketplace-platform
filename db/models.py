@@ -45,4 +45,10 @@ class DbTransaction(Base):
     advertisement_id = Column(Integer, ForeignKey('advertisements.id'), nullable=False)
     advertisement = relationship('DbAdvertisement', back_populates='transaction')
 
+class DbUser(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String)
+    email = Column(String)
+    password = Column(String)
 
