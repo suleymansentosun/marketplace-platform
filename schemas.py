@@ -10,6 +10,11 @@ class DeliveryEnum(str, Enum):
     pickup = "pickup"
     send = "send"
 
+class TransactionStatusEnum(str, Enum):
+    proposal_sended = "proposal_sended"
+    proposal_rejected = "proposal_rejected"
+    payment_done = "payment_done"
+
 class CategoryBase(BaseModel):
     name: str
 
@@ -41,3 +46,15 @@ class AdvertisementDetailDisplay(BaseModel):
     category_id: int
     class Config():
         from_attributes = True
+
+class TransactionBase(BaseModel):
+    payment_amount: int
+    advertisement_id: int
+
+class TransactionDisplay(BaseModel):
+    id: int
+    payment_amount: int
+    status: TransactionStatusEnum
+    advertisement_id: int
+    class Config:
+        orm_mode = True
