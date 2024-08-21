@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from routers import advertisement, category, transaction, user
 from db import models
 from db.database import engine
+from auth import authentication
 
 
 app = FastAPI()
+app.include_router(authentication.router)
 app.include_router(advertisement.router)
 app.include_router(category.router)
 app.include_router(transaction.router)
