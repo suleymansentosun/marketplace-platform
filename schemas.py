@@ -74,7 +74,6 @@ class UserDisplay(BaseModel):
     email: str 
     class Config():
         from_attributes = True
-<<<<<<< HEAD
 
 # class MessageBase(BaseModel):
 #     content: str,
@@ -96,7 +95,6 @@ class ConversationDisplay(ConversationBase):
     messages: List[MessageDisplay] = []
     class Config:
         orm_mode = True
-=======
         
 class ReviewBase(BaseModel):
     reviewer_id : int
@@ -108,5 +106,4 @@ class ReviewDisplay(BaseModel):
     id : int
     rating : float
     review_content : Text
->>>>>>> develop
         
