@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import List
 from pydantic import BaseModel
 from enum import Enum
 
@@ -72,4 +74,25 @@ class UserDisplay(BaseModel):
     email: str 
     class Config():
         from_attributes = True
+
+# class MessageBase(BaseModel):
+#     content: str,
+    
+
+class MessageDisplay(MessageBase):
+    id: int
+    created_at: datetime
+    class Config:
+        orm_mode = True
+
+class ConversationBase(BaseModel):
+    advertisement_id: int
+    buyer_id: int
+
+class ConversationDisplay(ConversationBase):
+    id: int
+    seller_id: int
+    messages: List[MessageDisplay] = []
+    class Config:
+        orm_mode = True
         
