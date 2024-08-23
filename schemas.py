@@ -1,3 +1,4 @@
+from typing import Text
 from pydantic import BaseModel
 from enum import Enum
 
@@ -72,4 +73,15 @@ class UserDisplay(BaseModel):
     email: str 
     class Config():
         from_attributes = True
+        
+class ReviewBase(BaseModel):
+    reviewer_id : int
+    reviewed_user_id : int
+    rating : float
+    review_content : Text
+        
+class ReviewDisplay(BaseModel):
+    id : int
+    rating : float
+    review_content : Text
         
