@@ -1,7 +1,7 @@
-from sqlalchemy.sql.sqltypes import Integer, String, Boolean
+from sqlalchemy.sql.sqltypes import Integer, String, Boolean, Float, Text
 from db.database import Base
-from sqlalchemy import Column, DateTime, Enum as SQLAlchemyEnum, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, DateTime, Enum as SQLAlchemyEnum, ForeignKey 
+from sqlalchemy.orm import relationship, validates
 from enum import Enum
 from sqlalchemy.sql import func
 
@@ -51,6 +51,26 @@ class DbUser(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
+    reviews_given = relationship('DbReview', foreign_keys='DbReview.reviewer_id', back_populates='reviewer') 
+    reviews_received = relationship("DbReview", foreign_keys='DbReview.reviewed_user_id', back_populates='reviewed_user')
+
+class DbReview(Base):
+    __tablename__ = 'reviews'
+    id = Column(Integer, primary_key=True, index=True)
+    rating = Column(Float, nullable=False)
+    review_content = Column(Text)
+    reviewer_id = Column(Integer, ForeignKey('users.id'))
+    reviewed_user_id = Column(Integer, ForeignKey('users.id'))
+    reviewer = relationship('DbUser', back_populates='reviews_given', foreign_keys=[reviewer_id])     
+    reviewed_user = relationship('DbUser', back_populates='reviews_received', foreign_keys=[reviewed_user_id])
+    
+    @validates('rating')
+    def validate_rating(self, key, value):
+        #if value < 1 or value > 5:
+        #   raise ValueError("Please rate the user between 1 and 5 stars")
+        assert value >= 1 or value <= 5
+        return value
+
 
 class DbConversation(Base):
     __tablename__ = 'conversations'
