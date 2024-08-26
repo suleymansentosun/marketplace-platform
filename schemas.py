@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Text
+from typing import List, Optional, Text
 from pydantic import BaseModel
 from enum import Enum
 
@@ -51,15 +51,15 @@ class AdvertisementDetailDisplay(BaseModel):
 
 class TransactionBase(BaseModel):
     payment_amount: int
-    advertisement_id: int
+    conversation_id: int
 
 class TransactionDisplay(BaseModel):
     id: int
     payment_amount: int
     status: TransactionStatusEnum
-    advertisement_id: int
+    conversation_id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
         
 
 class UserBase(BaseModel):
@@ -75,24 +75,34 @@ class UserDisplay(BaseModel):
     class Config():
         from_attributes = True
 
-# class MessageBase(BaseModel):
-#     content: str,
-    
+class MessageBase(BaseModel):
+    content: str
+    conversation_id: int
+    sender_user_id: int  
 
 class MessageDisplay(MessageBase):
     id: int
     created_at: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-class ConversationBase(BaseModel):
+class ConversationSpecificDisplay(BaseModel):
+    id: int
     advertisement_id: int
     buyer_id: int
-
-class ConversationDisplay(ConversationBase):
-    id: int
     seller_id: int
     messages: List[MessageDisplay] = []
+    transactions: List[TransactionDisplay] = []
+    class Config:
+        orm_mode = True
+
+class ConversationListDisplay(BaseModel):
+    advertisement_title: str
+    last_message_content: str  
+    last_message_owner: str  
+    last_message_date: datetime
+    transaction_status: Optional[str] = None
+
     class Config:
         orm_mode = True
         

@@ -36,14 +36,18 @@ class DbAdvertisement(Base):
     category_id = Column(Integer, ForeignKey('categories.id'))
     category = relationship("DbCategory", back_populates="advertisements")
     conversations = relationship("DbConversation", back_populates="advertisement")
-    seller_id = Column(Integer, ForeignKey('users.id'))
+    owner_id = Column(Integer, ForeignKey('users.id'))
     # created_time = Column(DateTime)
 
 class DbTransaction(Base):
     __tablename__= "transactions"
     id = Column(Integer, primary_key=True, index=True)
+    conversation_id = Column(Integer, ForeignKey("conversations.id"))
     payment_amount = Column(Integer)
     status = Column(SQLAlchemyEnum(TransactionStatusEnum), default=TransactionStatusEnum.proposal_sended)
+    conversation = relationship("DbConversation", back_populates="transactions")
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
 
 class DbUser(Base):
     __tablename__ = 'users'
@@ -53,6 +57,7 @@ class DbUser(Base):
     password = Column(String)
     reviews_given = relationship('DbReview', foreign_keys='DbReview.reviewer_id', back_populates='reviewer') 
     reviews_received = relationship("DbReview", foreign_keys='DbReview.reviewed_user_id', back_populates='reviewed_user')
+    messages = relationship("DbMessage", back_populates="sender")
 
 class DbReview(Base):
     __tablename__ = 'reviews'
@@ -75,18 +80,21 @@ class DbReview(Base):
 class DbConversation(Base):
     __tablename__ = 'conversations'
     id = Column(Integer, primary_key=True, index=True)
-    advertisement_id = Column(Integer, ForeignKey('advertisements.id'), nullable=False)
+    advertisement_id = Column(Integer, ForeignKey('advertisements.id'), nullable=True)
     buyer_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     advertisement = relationship("DbAdvertisement", back_populates="conversations")
     messages = relationship("DbMessage", back_populates="conversation", cascade="all, delete-orphan")
+    transactions = relationship("DbTransaction", back_populates="conversation")
 
 class DbMessage(Base):
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True, index=True)
     conversation_id = Column(Integer, ForeignKey('conversations.id'), nullable=False)
     content = Column(String, nullable=False)
-    is_from_seller = Column(Boolean, nullable=False)
+    sender_user_id = Column(Integer, ForeignKey('conversations.id'), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     conversation = relationship("Conversation", back_populates="messages")
+    sender = relationship("DbUser", back_populates="messages")
+
 
 
