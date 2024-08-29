@@ -18,6 +18,6 @@ def create_category(request: CategoryBase, db: Session = Depends(get_db)):
 def get_all_categories(db: Session = Depends(get_db)):
     return db_category.get_all_categories(db)
 
-@router.put('/{id}/update')
+@router.put('/{id}')
 def update_category(id: int, request: CategoryBase, db: Session = Depends(get_db)):
     return db_category.update_advertisement(db, id, request)
