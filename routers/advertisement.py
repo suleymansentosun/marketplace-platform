@@ -1,11 +1,11 @@
 from typing import List
-from schemas import AdvertisementBase, AdvertisementListDisplay, AdvertisementDetailDisplay
-from fastapi import APIRouter, Depends, HTTPException
+from schemas import AdvertisementBase, AdvertisementListDisplay, AdvertisementDetailDisplay, UserBase
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from db.database import get_db
 from db import db_advertisement, db_category
 from typing import Optional
-from auth.oauth2 import oauth2_scheme
+from auth.oauth2 import get_current_user, oauth2_scheme
 
 router = APIRouter(
     prefix="/advertisement",
@@ -13,10 +13,14 @@ router = APIRouter(
 )
 
 @router.post('/', response_model= AdvertisementDetailDisplay)
-def create_advertisement(request: AdvertisementBase, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def create_advertisement(request: AdvertisementBase, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme), current_user: UserBase = Depends(get_current_user)):
     category = db_category.get_category(db, request.category_id)
     if category is None:
         raise HTTPException(status_code=404, detail="Category not found")
+    
+    if request.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to do this operation")
+
     return db_advertisement.create_advertisement(db, request)
 
 @router.get('/', response_model=List[AdvertisementListDisplay])

@@ -31,6 +31,7 @@ class AdvertisementBase(BaseModel):
     condition: ConditionEnum
     delivery: DeliveryTypeEnum
     category_id: int
+    owner_id: int
 
 class AdvertisementListDisplay(BaseModel):
     title: str
@@ -45,6 +46,7 @@ class AdvertisementDetailDisplay(BaseModel):
     condition: ConditionEnum
     delivery: DeliveryTypeEnum
     category_id: int
+    owner_id: int
     class Config():
         from_attributes = True
 
@@ -57,7 +59,7 @@ class PaymentProposalDisplay(BaseModel):
     conversation_id: int
     sender_id: int
     amount: int
-    delivery_type: DeliveryTypeEnum
+    delivery_detail: DeliveryTypeEnum
     status: PaymentProposalStatusEnum
     created_at: datetime
     class Config():

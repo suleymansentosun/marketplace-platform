@@ -12,7 +12,8 @@ def create_advertisement(db: Session, request: AdvertisementBase):
     description = request.description,
     condition = request.condition,
     delivery = request.delivery,
-    category_id = request.category_id
+    category_id = request.category_id,
+    owner_id = request.owner_id
   )
   db.add(new_advertisement)
   db.commit()

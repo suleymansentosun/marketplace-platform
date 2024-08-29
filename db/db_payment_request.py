@@ -8,7 +8,7 @@ def create_payment_proposal(db: Session, request: PaymentProposalCreate, convers
         conversation_id = conversation_id,
         sender_id = sender_id,
         amount = request.amount,
-        delivery_detail = request.delivery_type,
+        delivery_detail = request.delivery_detail,
         status = "pending"
     )
     db.add(new_proposal)
