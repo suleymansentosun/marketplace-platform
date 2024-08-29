@@ -31,11 +31,11 @@ def get_all_advertisements(db: Session = Depends(get_db)):
 def get_advertisement(id: int, db: Session = Depends(get_db)):
     return db_advertisement.get_advertisement(db, id)
 
-@router.put('/{id}/update')
+@router.put('/{id}')
 def update_advertisement(id: int, request: AdvertisementBase, db: Session = Depends(get_db)):
     return db_advertisement.update_advertisement(db, id, request)
 
-@router.delete('/delete/{id}')
+@router.delete('/{id}')
 def delete(id: int, db: Session = Depends(get_db)):
     return db_advertisement.delete_advertisement(db, id)
 

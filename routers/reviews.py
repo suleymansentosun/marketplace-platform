@@ -34,7 +34,7 @@ def get_review(id: int, db: Session = Depends(get_db)):
     return db_reviews.get_review(db, id)
 
 # Update review
-@router.put('/{id}/update')
+@router.put('/{id}')
 def update_review(id: int, request: ReviewUpdateDisplay,  db: Session = Depends(get_db)):
    # logger.info(request.rating)
     if request.rating < 1  or  request.rating > 5:
@@ -43,7 +43,7 @@ def update_review(id: int, request: ReviewUpdateDisplay,  db: Session = Depends(
     return db_reviews.update_review(db, id, request)
 
 # Delete review
-@router.delete('/delete/{id}')
+@router.delete('/{id}')
 def delete_review(id: int, db: Session = Depends(get_db)):
     return db_reviews.delete_review(db, id)
 
