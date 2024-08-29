@@ -1,8 +1,12 @@
 from fastapi import HTTPException, status
 from db.hash import Hash
 from sqlalchemy.orm.session import Session
-from schemas import UserBase
-from db.models import DbUser
+from schemas import UserBase, UserDisplay
+from db.models import DbUser, DbReview
+from sqlalchemy import select
+from sqlalchemy import func
+
+
 
 def create_user(db: Session, request: UserBase):
     new_user = DbUser(
@@ -13,7 +17,12 @@ def create_user(db: Session, request: UserBase):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+    return UserDisplay(
+        id=new_user.id,
+        username=new_user.username,
+        email=new_user.email,
+        avarage_rating=0.0  
+    )
 
 def get_all_users(db: Session):
     return db.query(DbUser).all()
@@ -44,6 +53,10 @@ def delete_user(db: Session, id: int):
     db.delete(user)
     db.commit()
     return'User deleted'
+
+def get_user_ids(db: Session):
+    user_ids = db.query(DbUser.id).all()
+    return [user_id[0] for user_id in user_ids] 
     
     
 

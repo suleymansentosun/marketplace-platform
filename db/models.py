@@ -20,13 +20,13 @@ class DeliveryTypeEnum(str, Enum):
 
 class DbCategory(Base):
     __tablename__ = 'categories'
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String, index=True, unique=True)
     advertisements = relationship("DbAdvertisement", back_populates="category")
 
 class DbAdvertisement(Base):
     __tablename__= "advertisements"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     title = Column(String)
     price = Column(Integer)
     description = Column(String)
@@ -38,6 +38,7 @@ class DbAdvertisement(Base):
     owner_id = Column(Integer, ForeignKey('users.id'))
     # created_time = Column(DateTime)
 
+<<<<<<< HEAD
 # class DbTransaction(Base):
 #     __tablename__= "transactions"
 #     id = Column(Integer, primary_key=True, index=True)
@@ -59,10 +60,19 @@ class DbPaymentProposal(Base):
     conversation = relationship("DbConversation", back_populates="payment_proposals")
     sender = relationship("DbUser", back_populates="sent_payment_proposals")
 
+=======
+class DbTransaction(Base):
+    __tablename__= "transactions"
+    id = Column(Integer, primary_key=True)
+    payment_amount = Column(Integer)
+    status = Column(SQLAlchemyEnum(TransactionStatusEnum), default=TransactionStatusEnum.proposal_sended)
+    advertisement_id = Column(Integer, ForeignKey('advertisements.id'), nullable=False)
+    advertisement = relationship('DbAdvertisement', back_populates='transaction')
+>>>>>>> develop
 
 class DbUser(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     username = Column(String)
     email = Column(String)
     password = Column(String)
@@ -73,19 +83,17 @@ class DbUser(Base):
 
 class DbReview(Base):
     __tablename__ = 'reviews'
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     rating = Column(Float, nullable=False)
     review_content = Column(Text)
-    reviewer_id = Column(Integer, ForeignKey('users.id'))
-    reviewed_user_id = Column(Integer, ForeignKey('users.id'))
+    reviewer_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    reviewed_user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     reviewer = relationship('DbUser', back_populates='reviews_given', foreign_keys=[reviewer_id])     
     reviewed_user = relationship('DbUser', back_populates='reviews_received', foreign_keys=[reviewed_user_id])
     
     @validates('rating')
     def validate_rating(self, key, value):
-        #if value < 1 or value > 5:
-        #   raise ValueError("Please rate the user between 1 and 5 stars")
-        assert value >= 1 or value <= 5
+        assert value >= 1 and value <= 5
         return value
 
 
