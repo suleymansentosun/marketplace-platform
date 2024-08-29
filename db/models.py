@@ -38,16 +38,6 @@ class DbAdvertisement(Base):
     owner_id = Column(Integer, ForeignKey('users.id'))
     # created_time = Column(DateTime)
 
-<<<<<<< HEAD
-# class DbTransaction(Base):
-#     __tablename__= "transactions"
-#     id = Column(Integer, primary_key=True, index=True)
-#     conversation_id = Column(Integer, ForeignKey("conversations.id"))
-#     payment_amount = Column(Integer)
-#     status = Column(SQLAlchemyEnum(TransactionStatusEnum), default=TransactionStatusEnum.proposal_sended)
-#     conversation = relationship("DbConversation", back_populates="transactions")
-#     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-
 class DbPaymentProposal(Base):
     __tablename__ = "payment_proposals"
     id = Column(Integer, primary_key=True, index=True)
@@ -59,16 +49,6 @@ class DbPaymentProposal(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     conversation = relationship("DbConversation", back_populates="payment_proposals")
     sender = relationship("DbUser", back_populates="sent_payment_proposals")
-
-=======
-class DbTransaction(Base):
-    __tablename__= "transactions"
-    id = Column(Integer, primary_key=True)
-    payment_amount = Column(Integer)
-    status = Column(SQLAlchemyEnum(TransactionStatusEnum), default=TransactionStatusEnum.proposal_sended)
-    advertisement_id = Column(Integer, ForeignKey('advertisements.id'), nullable=False)
-    advertisement = relationship('DbAdvertisement', back_populates='transaction')
->>>>>>> develop
 
 class DbUser(Base):
     __tablename__ = 'users'

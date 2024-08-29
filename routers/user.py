@@ -1,18 +1,12 @@
 from typing import List
-<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException, status
 from auth.oauth2 import get_current_user
 from db.db_conversation import get_conversations_for_user
 from db.db_message import get_last_message_for_conversation
 # from db.db_transaction import get_last_transaction_in_specific_conversation
 from db.db_payment_request import get_last_payment_request_in_specific_conversation
-from schemas import ConversationListDisplay, MessageDisplay, UserBase, UserDisplay
+from schemas import ConversationListDisplay, MessageDisplay, UserBase, UserDisplay, UserAllDisplay
 from db import db_user, models
-=======
-from fastapi import APIRouter, Depends
-from schemas import UserAllDisplay, UserBase, UserDisplay
-from db import db_user
->>>>>>> develop
 from db.database import get_db
 from sqlalchemy.orm import Session
 from db.db_user import get_user
