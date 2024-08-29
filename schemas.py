@@ -1,4 +1,4 @@
-from typing import Text
+from typing import Text, Optional
 from pydantic import BaseModel
 from enum import Enum
 
@@ -71,17 +71,30 @@ class UserDisplay(BaseModel):
     id: int
     username: str
     email: str 
+    avarage_rating: Optional [float]
+    class Config():
+        from_attributes = True
+        
+class UserAllDisplay(BaseModel):
+    id: int
+    username: str
+    email: str 
+    avarage_rating: Optional [float]
     class Config():
         from_attributes = True
         
 class ReviewBase(BaseModel):
-    reviewer_id : int
-    reviewed_user_id : int
-    rating : float
-    review_content : Text
+    reviewer_id: int
+    reviewed_user_id: int
+    rating: float
+    review_content: str
         
 class ReviewDisplay(BaseModel):
     id : int
+    rating : float
+    review_content : Text
+    
+class ReviewUpdateDisplay(BaseModel):
     rating : float
     review_content : Text
         
