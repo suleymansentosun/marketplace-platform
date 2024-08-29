@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from auth.oauth2 import get_current_user
 from db.db_conversation import get_conversations_for_user
 from db.db_message import get_last_message_for_conversation
-from db.db_transaction import get_last_transaction_in_specific_conversation
-from schemas import ConversationDisplay, ConversationListDisplay, MessageDisplay, TransactionDisplay, UserBase, UserDisplay
+# from db.db_transaction import get_last_transaction_in_specific_conversation
+from db.db_payment_request import get_last_payment_request_in_specific_conversation
+from schemas import ConversationListDisplay, MessageDisplay, UserBase, UserDisplay
 from db import db_user, models
 from db.database import get_db
 from sqlalchemy.orm import Session
@@ -40,7 +41,7 @@ def update_user(id: int, request: UserBase,  db: Session = Depends(get_db)):
 def delete_user(id: int, db: Session = Depends(get_db)):
     return db_user.delete_user(db, id)
 
-@router.get("/{user_id}/conversations", response_model=List[ConversationDisplay])
+@router.get("/{user_id}/conversations", response_model=List[ConversationListDisplay])
 def get_conversations(user_id: int, db: Session = Depends(get_db), current_user: UserBase = Depends(get_current_user)):
 
     if user_id != current_user.id:
@@ -49,7 +50,7 @@ def get_conversations(user_id: int, db: Session = Depends(get_db), current_user:
             detail="You do not have permission to access this user's conversations."
         )    
 
-    conversations = get_conversations_for_user(db, current_user.id)
+    conversations = get_conversations_for_user(db, user_id)
     
     # Convert to a list of ConversationResponse objects, including the owner_id from the Product
     conversation_responses = []
@@ -57,7 +58,7 @@ def get_conversations(user_id: int, db: Session = Depends(get_db), current_user:
         # messages = get_messages_for_conversation(db, conversation.id)
         
         last_message = get_last_message_for_conversation(db, conversation.id)
-        last_transaction = get_last_transaction_in_specific_conversation(db, conversation.id)
+        last_transaction = get_last_payment_request_in_specific_conversation(db, conversation.id)
 
         # message_displays = [MessageDisplay.model_validate(message) for message in messages]
         # transaction_displays = [TransactionDisplay.model_validate(transaction) for transaction in transactions]
