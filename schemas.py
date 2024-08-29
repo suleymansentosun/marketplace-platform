@@ -1,4 +1,5 @@
-from typing import Text, Optional
+from datetime import datetime
+from typing import List, Optional, Text
 from pydantic import BaseModel
 from enum import Enum
 
@@ -7,14 +8,13 @@ class ConditionEnum(str, Enum):
     refurbished = "refurbished"
     used = "used"
 
-class DeliveryEnum(str, Enum):
+class DeliveryTypeEnum(str, Enum):
     pickup = "pickup"
     send = "send"
 
-class TransactionStatusEnum(str, Enum):
-    proposal_sended = "proposal_sended"
-    proposal_rejected = "proposal_rejected"
-    payment_done = "payment_done"
+class PaymentProposalStatusEnum(str, Enum):
+    pending = "pending"
+    confirmed = "confirmed"
 
 class CategoryBase(BaseModel):
     name: str
@@ -29,7 +29,7 @@ class AdvertisementBase(BaseModel):
     price: int
     description: str
     condition: ConditionEnum
-    delivery: DeliveryEnum
+    delivery: DeliveryTypeEnum
     category_id: int
 
 class AdvertisementListDisplay(BaseModel):
@@ -43,26 +43,28 @@ class AdvertisementDetailDisplay(BaseModel):
     price: int
     description: str
     condition: ConditionEnum
-    delivery: DeliveryEnum
+    delivery: DeliveryTypeEnum
     category_id: int
     class Config():
         from_attributes = True
 
-class TransactionBase(BaseModel):
-    payment_amount: int
-    advertisement_id: int
+class PaymentProposalCreate(BaseModel):
+    amount: int
+    delivery_detail: DeliveryTypeEnum
 
-class TransactionDisplay(BaseModel):
+class PaymentProposalDisplay(BaseModel):
     id: int
-    payment_amount: int
-    status: TransactionStatusEnum
-    advertisement_id: int
-    class Config:
-        orm_mode = True
+    conversation_id: int
+    sender_id: int
+    amount: int
+    delivery_type: DeliveryTypeEnum
+    status: PaymentProposalStatusEnum
+    created_at: datetime
+    class Config():
+        from_attributes = True
         
 
 class UserBase(BaseModel):
-    #id: int
     username: str
     email: str
     password: str
@@ -82,6 +84,40 @@ class UserAllDisplay(BaseModel):
     avarage_rating: Optional [float]
     class Config():
         from_attributes = True
+
+class MessageBase(BaseModel):
+    content: str
+    sender_user_id: int
+    advertisement_id: int
+    buyer_user_id: int
+
+class MessageDisplay(BaseModel):
+    id: int
+    content: str
+    sender_user_id: int
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class ConversationSpecificDisplay(BaseModel):
+    id: int
+    advertisement_id: int
+    buyer_id: int
+    seller_id: int
+    messages: List[MessageDisplay] = []
+    payment_proposals: List[PaymentProposalDisplay] = []
+    class Config:
+        orm_mode = True
+
+class ConversationListDisplay(BaseModel):
+    advertisement_title: str
+    last_message_content: str  
+    last_message_owner: int  
+    last_message_date: datetime
+    transaction_status: Optional[str] = None
+
+    class Config:
+        orm_mode = True
         
 class ReviewBase(BaseModel):
     reviewer_id: int
@@ -93,7 +129,7 @@ class ReviewDisplay(BaseModel):
     id : int
     rating : float
     review_content : Text
-    
+
 class ReviewUpdateDisplay(BaseModel):
     rating : float
     review_content : Text
